@@ -18,14 +18,16 @@ It is recommended that code depend on the smallest set of functionality (i.e. it
 
 The standard `FileManager` is extended to conform to `FIleManagement`. At point of consumption, code may look something like this:
 
-    struct ThingThatMovesFiles {
-        private let fileMover: FileMovement
-        
-        init(fileMover: FileMovement = FileManager.shared) {
-            self.fileMover = fileMover
-        }
-        
-        func doStuff() {
-            try fileMover.moveItem(at: srcUrl, to: dstUrl)
-        }
+```swift
+struct ThingThatMovesFiles {
+    private let fileMover: FileMovement
+    
+    init(fileMover: FileMovement = FileManager.shared) {
+        self.fileMover = fileMover
     }
+    
+    func doStuff() {
+        try fileMover.moveItem(at: srcUrl, to: dstUrl)
+    }
+}
+```
