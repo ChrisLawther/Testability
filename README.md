@@ -31,3 +31,15 @@ struct ThingThatMovesFiles {
     }
 }
 ```
+
+A corresponding spy implementation that only records which moves had been _requested_ might then look like this:
+
+```swift
+class SpyFileMover: FileMovement {
+    private(set) var moves: [(URL, URL)] = []
+    
+    func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        moves.append((srcURL, dstURL))
+    }
+}
+```
