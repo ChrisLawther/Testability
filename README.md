@@ -16,7 +16,7 @@ Commonly used file-related functionality, currently extending to:
 
 It is recommended that code depend on the smallest set of functionality (i.e. it shouldn't 'depend on a `FileManagement` if `FileMovement` is all that is needed). This will reduce the amount of code required by alternative spy/stub/mock implementations.
 
-The standard `FileManager` is extended to conform to `FIleManagement`. At point of consumption, code may look something like this:
+The standard `FileManager` is extended to conform to `FileManagement`. At point of consumption, code may look something like this:
 
 ```swift
 struct ThingThatMovesFiles {
