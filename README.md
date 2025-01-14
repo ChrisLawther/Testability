@@ -43,3 +43,19 @@ class SpyFileMover: FileMovement {
     }
 }
 ```
+
+## Data fetching
+
+A single protocol for the fetching of data:
+
+ * `protocol DataFetching` for retrieving the data and response from a `URL` or `URLRequest`
+ 
+As an even lighter weight solution, `public typealias DataFetcher` describes the signature of `URLSession.data(for:)`, so can be satisfied by passing a simple closure rather than needing an object.
+
+## File downloading
+
+Very similar to `DataFetching`, but dealing in on-disk files rather than in-memory data:
+
+ * `protocol FileDownloading` for retrieving the content and response from a `URL` or `URLRequest` to store in a local file
+
+Again, as an even lighter weight solution `public typealias FileDownloader` describes the signature of `URLSession.download(for:)`, which can also be satisfied by passing a simple closure rather than needing to define a type and pass an instance.

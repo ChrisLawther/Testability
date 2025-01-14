@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import Testability
 
-@Test func example() async throws {
+@Test func exampleFileMover() async throws {
     // GIVEN
     let spyMover = SpyMover()
     let sut = ThingThatMovesFiles(fileMover: spyMover)
