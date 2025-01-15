@@ -1,6 +1,6 @@
 #  Testability
 
-A selection of protocols matching commonly used elements of Foundation, such that production code can use Foundation, but tests can trivially switch to alternative implementations.
+A selection of protocols matching commonly used elements of Foundation, such that production code can use the Foundation implementation, but tests can trivially switch to alternative spy/stub/mocks.
 
 ## File Management
 
@@ -59,3 +59,12 @@ Very similar to `DataFetching`, but dealing in on-disk files rather than in-memo
  * `protocol FileDownloading` for retrieving the content and response from a `URL` or `URLRequest` to store in a local file
 
 Again, as an even lighter weight solution `public typealias FileDownloader` describes the signature of `URLSession.download(for:)`, which can also be satisfied by passing a simple closure rather than needing to define a type and pass an instance.
+
+# Example
+
+`CombinedTests` illustrates how we now have total control over the interactions a hypothetical app has with external systems. Our tests can now:
+
+ - return `Data` of our choosing (or throw any error we like)
+ - confirm that the content of the data leads to the app taking the correct next step
+ - respond to the download request in a way that we control
+ - confirm that the app then attempts to perform the correct move, whether that's determining the destination based on some content from the original data, or some other logic.
