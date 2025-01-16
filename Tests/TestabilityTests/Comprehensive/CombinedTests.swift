@@ -5,35 +5,47 @@ import Testing
 @Test func comprehensiveExample() async throws {
     // GIVEN
     let responseData = """
-    {
-        "fileOfTheDay": "https://fotd/somefile.mp3"
-    }
+    [
+      {
+        "url": "https://some.podcast/some/episode.mp3",
+        "title": "The very first episode ever!",
+        "published": "Mon, 10 Jan 2025 13:00:00 GMT"
+      }
+    ]
     """.data(using: .utf8)!
 
     let logger = RequestLogger()
     let spyDownloader = SpyDownloader(logger: logger)
     let spyMover = SpyMover()
-
-    let sut = FileOfTheDayDownloader(
+    let spyAttributes = SpyFileAttributes()
+    
+    let sut = PodcastArchiver(
         fetch: { url in
             await logger.log(url)
             return (responseData, HTTPURLResponse())
         },
         downloader: spyDownloader,
-        mover: spyMover)
+        mover: spyMover,
+        modifier: spyAttributes
+    )
 
     // WHEN
-    try await sut.doWork()
+    try await sut.fetchAllPodcasts(from: URL(string: "https://some.podcast/feed.json")!)
 
     // THEN
     // There should be exactly 2 requests
     #expect((await logger.urls.count) == 2)
-    #expect((await logger.urls.first?.absoluteString) == "https://fotd/today.json")
-    #expect((await logger.urls.last?.absoluteString) == "https://fotd/somefile.mp3")
+    #expect((await logger.urls.first?.absoluteString) == "https://some.podcast/feed.json")
+    #expect((await logger.urls.last?.absoluteString) == "https://some.podcast/some/episode.mp3")
+    
     // There should be exactly 1 move
     #expect(spyMover.moves.count == 1)
-    #expect(spyMover.moves.first?.src.path() == "/tmp/some/download.mp3")
-    #expect(spyMover.moves.first?.dst.path() == "/Users/chris/Documents/today.mp3")
+    #expect(spyMover.moves.first?.src.path(percentEncoded: false) == "/tmp/some/download.mp3")
+    let expectedDstPath = "/Users/chris/Documents/The very first episode ever!.mp3"
+    #expect(spyMover.moves.first?.dst.path(percentEncoded: false) == expectedDstPath)
+    
+    // The created date should have been set
+    #expect(spyAttributes.attributes[expectedDstPath]?[FileAttributeKey.creationDate] as? Date == Date(timeIntervalSince1970: 1736514000))
 }
 
 actor RequestLogger {
